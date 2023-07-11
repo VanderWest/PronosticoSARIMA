@@ -6,4 +6,5 @@ Veremos las razones para elegir SARIMA en lugar de otros modelos y sus respectiv
 Los datos para este desafío fueron obtenidos de https://www.key2stats.com/data-set/view/745 lo cuales corresponden al número de medicamentos anti-diabetes prescritos en Australia entre los años 1991 y 2008.
 
 Data ya procesada:
+
 ![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/ImagenesReadme/DF.PNG?raw=true)
