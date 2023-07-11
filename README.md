@@ -7,4 +7,15 @@ Los datos para este desafío fueron obtenidos de https://www.key2stats.com/data-
 
 Data ya procesada:
 
-![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/ImagenesReadme/DF.PNG?raw=true)
+![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/DF.PNG?raw=true)
+
+Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis exploratorio sobre la data para ver sí existen patrones que puedan guiarnos, lo único que sabemos es que estamos trabajando con series de tiempo y queremos pronosticar (de esta forma se reduce en número de modelos a utilizar en la bolsa). Graficando los datos obtenemos una idea sobre que está ocurriendo:
+
+
+![Gráfica](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Gr%C3%A1fica%20prescripciones%20por%20mes.png?raw=true)
+
+Con está sola gráfica se pueden observar 3 patrones: Primero la tendencia creciente que tienen los datos conforme pasa los años. Segundo, la estacionalidad de los datos, creando patrones repetitivos en los años. Tercero, una suerte de ruido blanco, mostrando lo errático que se van volviendo los valores de los datos sin perderse en la aleatoriedad.
+
+Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paquete STL (seasonal-trend decomposition) para ver en detalle que es que ocurre:
+
+![STL](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/STL.png?raw=true)
