@@ -7,4 +7,4 @@ Los datos para este desafío fueron obtenidos de https://www.key2stats.com/data-
 
 Data ya procesada:
 
-![Data limpia](DF.PNG)
+![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/ImagenesReadme/DF.PNG?raw=true)
