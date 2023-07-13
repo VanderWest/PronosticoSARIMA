@@ -1,4 +1,4 @@
-# Proyecto
+# Pronóstico de prescripciones de medicinas anti-diabetes en Australia para el segundo semestre del año 2008.
 
 Se busca pronosticar a través de series de tiempo el número de prescripciones de medicamentos anti-diabetes para los próximos 6 meses en Australia utilizando una muestra sobre el numero de prescripciones realizadas entre los años 1991 y 2008, Para ello se propone el uso del modelo de machine learning SARIMA, el cual es un modelo de pronósticos en base a la integración de coeficientes y errores tomando en consideración datos que tienen una tendencia estacional, a diferencia de ARIMA que omite la estacionalidad para su entrenamiento.
 Veremos las razones para elegir SARIMA en lugar de otros modelos y sus respectivas métricas para medir la calidad del modelo.
