@@ -173,4 +173,4 @@ Get_forecast recibe la cantidad de pasos que queremos pronosticar a partir de nu
 
 Con esto finalmente obtenemos el pronostico de la cantidad aproximada de medicinas anti-diabeticas que podrian ser prescritas en Australia a partir de agosto hasta fines del 2008.
 
-![Cantidades pronosticadas](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Pronostico.PNG?raw=true) 
+![Cantidades pronosticadas](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Meses%20pronosticados.PNG?raw=true) 
