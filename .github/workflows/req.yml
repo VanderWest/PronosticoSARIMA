@@ -1,0 +1,22 @@
+name: Creación requirement
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Requirement:
+    name: Creación Req.txt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: freeze
+        run: |
+          python -m pip install --upgrade pip
+          pip freeze > requirements.txt
