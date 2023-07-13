@@ -25,7 +25,6 @@ Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paque
 - En la primera grafica observamos lo anterior, el numero de prescripciones entre los años 1991 y 2008.
 - La segunda, tendencia, nos muestra el comportamiento creciente del número de prescripciones recetadas al paso de los años.
 - La tercera, estacionalidad, muestra el patrón cíclico del número de prescripciones recetadas entre los años 1991 y 2008.
-- La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data.
 - La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data, mientras mas cerca del 0 estén los valores, mas acertado es el pronóstico.
 
 Ahora queremos desarrollar el modelo que nos ayudará a pronosticar los próximos 6 meses, para ello, debemos empezar por ver que nuestra data presentada no tenga tendencia, sea estacionario y no tenga autocorrelación entre sus datos, aplicamos de esta forma el método ADF comprobarlo. ADF nos ayuda a comprobar si es que existe tendencia y estacionalidad en la serie de tiempo.
@@ -96,3 +95,82 @@ El modelo entrenado con los parámetros anteriores nos entrega el siguiente diag
 
 **Predicciones y pronóstico**
 
+Hay que tener un poco de cuidado, utilizaremos 4 años de data para testear y así pronosticar 6 meses, pero no queremos caer en que aun así sigue siendo muy pequeña la muestra, por lo que además del modelo SARIMA, se utilizará también un modelo estacional como referencia, que utilizará los 12 últimos meses de la data como muestra para pronosticar los siguientes 6 meses.
+
+Este proceso de comparación se lleva a cabo mediante el método Rolling Forecast, tomando como parámetros:
+- El Dataframe trabajado.
+- Tamaño de la muestra de entrenamiento.
+- Horizonte, que corresponde al tamaño de la muestra de prueba.
+- Ventana, que corresponde a cuantos puntos queremos pronosticar.
+- Método, cuál es el modelo que se utilizará en el pronóstico.
+
+De esta forma podemos crear una comparación entre las predicciones de varios modelos simultáneamente. Asignamos al método los siguientes valores y continuamos con la predicción:
+
+- Strain = 156    Tamaño del conjunto de entrenamiento.
+- Horizon = 48    Tamaño del conjunto de prueba.
+- Window = 12     Pasos a predecir.
+
+Como se mencionó antes, la razón para trabajar con una ventana de 12 es porque estamos aplicando get_predict en nuestro modelo en lugar de get_forecast, mas adelante utilizaremos la segunda función pero primero queremos evaluar el desempeño del modelo .
+
+Graficando nuestro Rolling Forecast:
+
+![Rolling1](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/GrafoProno1.png?raw=true)
+
+Podemos observar que poco a poco SARIMA se aleja de los valores reales, y esto quizas es debido a que ocupamos pocos datos para el entrenamiento, asique volveremos a entrenar un nuevo SARIMA, pero en lugar de dejar 4 años para prueba, dejaremos solo 3 y el resto lo dejaremos para entrenamiento, para esto debemos realizar los mismo pasos que hemos seguido hasta hora desde cero:
+
+- Optimizar para encontrar parámetros.
+- Modelar con los parámetros encontrados.
+- Pronosticar.
+
+Optimizando con 168 meses obtenemos las siguientes combinaciones para AIC:
+
+![AIC2](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/AIC2.PNG?raw=true)
+
+Con esto entendemos que los parámetros (p,q,P,Q) toman los valores (3,1,1,3) para así minimizar el criterio.
+
+Entrenamos nuestro SARIMA con estos valores y el Rolling Forecast toma la siguente forma:
+
+![Rolling2](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/GrafoProno2.png?raw=true)
+
+Notamos que ahora las predicciones de SARIMA se acercan más a los valores reales, por lo que ahora procedemos a evaluar el desempeño de los modelos, así podemos tener una idea de la calidad de estos a través de sus métricas.
+
+**Evaluación de los pronósticos**
+
+Aquí evaluaremos la calidad de los modelos a través de la métrica MAPE (Mean Absolute Percentage Error) el cual es el indicador de desempeño para modelos de pronostico en series de tiempo. Este evalua los modelos midiendo el error porcentual promedio entre los valores pronosticados y los valores reales:
+
+![MAPE](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/MAPE.PNG?raw=true)
+
+- n corresponde al número de pares de valores predicción-real.
+- A es el valor real. 
+- F es el valor predicho.
+
+Los MAPE obtenidos:
+- Seasonal               = 22.58%
+- SARIMA(2,1,3)(0,1,1)12 = 10.07%
+- SARIMA(3,1,1)(1,1,3)12 = 9.33%
+
+El modelo desarrollado utilizando la predicción a través de la última temporada tiene un porcentaje de error promedio más alto que ambos SARIMA, y en general ambos SARIMA tiene un rendimiento muy bueno, particularmente SARIMA(3,1,1)(1,1,3) es mejor que el anterior con una diferencia no muy significativa entre ellos a pesar de tener año de data de entrenamiento más que SARIMA(2,1,3)(0,1,1).
+
+Podemos intentar reducir aún más el horizonte para entrenar, pero estaremos arriesgando un overfitting en el modelo.
+
+**Volviendo al objetivo**
+
+Finalmente nos enfocamos en el objetivo inicial, pronosticar los siguientes 6 meses de prescripciones anti-diabeticas en Australia, para ello debemos retocar nuestro modelo.
+Antes estábamos prediciendo en el modelo para las muestras utilizando la función get_predict, sin embargo, ahora queremos pronosticar 6 meses que desconocemos, por lo que utilizamos get_forecast.
+
+Get_forecast recibe la cantidad de pasos que queremos pronosticar a partir de nuestro modelo y nos entrega estos valores, así, colocando una ventana igual a 6 obtenemos el pronostico de los meses que desconocemos.
+
+![Cantidades](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Cantidades%20pronosticadas.PNG?raw=true)
+
+**Conclusiones**
+
+- Luego de modelar SARIMA obtenemos un error porcentual de 9.33% de que las cantidades pronosticadas difieran de las cantidades reales que vayan a ser descritas en lo que queda del 2008.
+
+- Mientras mas bajo sea el valor del MAPE, mayor es la calidad de pronostico del modelo, y un MAPE de 9.33% es un porcentaje aceptable de error para la cantidad de data que estamos trabajando, sin embargo, esto podría mejorarse si esque tuvieramos una mayor muestra de datos, recordemos que tenemos muestras mensuales entre los años 1991 y 2008.
+
+- También es posible que el modelo pudiera mejorarse a partir de variables exógenas, aunque este modele no posee tales variables, recordemos que SARIMA es un caso especial de SARIMAX, donde este último utiliza tanto endógenas como exógenas para entrenar el modelo, sin embargo, nuestra data carece de estas variables.
+
+
+Con esto finalmente obtenemos el pronostico de la cantidad aproximada de medicinas anti-diabeticas que podrian ser prescritas en Australia a partir de agosto hasta fines del 2008.
+
+![Cantidades pronosticadas](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Pronostico.PNG?raw=true) 
