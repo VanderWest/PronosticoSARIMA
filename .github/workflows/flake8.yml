@@ -1,0 +1,28 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install flake8 nbformat
+
+      - name: Run Flake8
+        run: flake8 --extend-ignore=E111,E114,E402 --exclude=".git,__pycache__,venv" .
