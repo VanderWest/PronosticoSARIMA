@@ -16,7 +16,7 @@ Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis 
 
 ![Gráfica](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Gr%C3%A1fica%20prescripciones%20por%20mes.png?raw=true)
 
-Con está sola gráfica se pueden observar 3 patrones: Primero la tendencia creciente que tienen los datos conforme pasa los años. Segundo, la estacionalidad de los datos, creando patrones repetitivos en los años. Tercero, una suerte de ruido blanco, mostrando lo errático que se van volviendo los valores de los datos sin perderse en la aleatoriedad.
+Con esta sola gráfica se pueden observar 3 patrones: Primero la tendencia creciente que tienen los datos conforme pasa los años. Segundo, la estacionalidad de los datos, creando patrones repetitivos en los años. Tercero, una suerte de ruido blanco, mostrando lo errático que se van volviendo los valores de los datos sin perderse en la aleatoriedad.
 
 Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paquete STL (seasonal-trend decomposition) para ver en detalle que es lo que ocurre:
 
