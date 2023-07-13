@@ -9,6 +9,11 @@ Data ya procesada:
 
 ![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/DF.PNG?raw=true)
 
+<<<<<<< Updated upstream
+=======
+**Análisis exploratorio**
+
+>>>>>>> Stashed changes
 Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis exploratorio sobre la data para ver sí existen patrones que puedan guiarnos, lo único que sabemos es que estamos trabajando con series de tiempo y queremos pronosticar (de esta forma se reduce en número de modelos a utilizar en la bolsa). Graficando los datos obtenemos una idea sobre que está ocurriendo:
 
 
@@ -23,5 +28,78 @@ Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paque
 - En la primera grafica observamos lo anterior, el numero de prescripciones entre los años 1991 y 2008.
 - La segunda, tendencia, nos muestra el comportamiento creciente del número de prescripciones recetadas al paso de los años.
 - La tercera, estacionalidad, muestra el patrón cíclico del número de prescripciones recetadas entre los años 1991 y 2008.
+<<<<<<< Updated upstream
 - La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data.
+=======
+- La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data, mientras mas cerca del 0 estén los valores, mas acertado es el pronóstico.
+
+Ahora queremos desarrollar el modelo que nos ayudará a pronosticar los próximos 6 meses, para ello, debemos empezar por ver que nuestra data presentada no tenga tendencia, sea estacionario y no tenga autocorrelación entre sus datos, aplicamos de esta forma el método ADF comprobarlo. ADF nos ayuda a comprobar si es que existe tendencia y estacionalidad en la serie de tiempo.
+
+Que sea estacionario es una de las características mas fundamentales dado que de esta forma el comportamiento de las series de tiempo puede ser predecible debido a que sus propiedades estadísticas (como la media o la varianza) se mantienen constantes en el tiempo, no solo eso, sino que el modelo que buscamos aplicar actúa sobre series de tiempo estacionarias.
+
+ADF:
+- ADF Statistic: 3.145190
+- p-value: 1.000000
+
+Ambos valores nos indican que nuestra data no es estacionaria y que existe una tendencia en los datos, ADF utiliza hipótesis para comprobar ambos dos, si esque un p-value menor a 0.05 y el ADF es un número negativo alto, se puede rechazar lo que llamamos *hipótesis nula* y confirmar que se trata de una serie de tiempo estacional y sin tendencia.
+
+Aquí aplicamos un método de transformación para que la serie de tiempo sea estacionaria, utilizando la diferenciación, para ello solo aplicamos la función diff de numpy, que ira tomando la diferencia en los pares de datos y creando una nueva serie de tiempo, esperando que esta última si sea estacionaria.
+
+ADF:
+- ADF Statistic: -2.495174
+- p-value: 0.116653
+
+Obtenemos que el ADF ahora es negativo, pero aún nos falta que el valor p sea menor a 0.05, por lo que volveremos a transformar, ahora en vez de realizar una diferenciación simple aplicaremos una diferenciación estacional, ya que observamos anteriormente que nuestra serie de tiempo presenta patrones estacionales, para ello utilizaremos la misma función pero esta vez con un hiperparametro denotando la cantidad de pasos por estación (n=12).
+
+- ADF Statistic: -18.779673
+- p-value: 0.000000
+
+Luego de estas transformaciones, una diferenciación (d=1) y una diferenciación estacional (D=1), obtenemos que nuestra serie de tiempo es estacionaria y sin tendencia, por lo que podemos pasar al siguiente paso, modelar.
+
+**Modelamiento**
+
+Para el entrenamiento del modelo no podemos ocupar el clásico train_test_split, esto porque es imperativo que las series de tiempo sean trabajadas en orden, el TTS toma porcentajes aleatorios de la muestra como train y test, pero para casos de este proyecto, se debe tomar un entrenamiento con cierto porcentaje de la data desde su valor inicial hasta un valor arbitrario, de acuerdo a lo que sea pertinente al modelo.
+
+Tenemos data de 204 meses, por lo que utilizaremos 156 meses para el entrenamiento y los ultimos 4 años para realizar las pruebas:
+
+![traintest](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Gris.png?raw=true)
+
+La parte en gris denota la muestra que será utilizada para le prueba, mientras que el resto de la data será para entrenar el modelo.
+
+Una vez definidas las muestras de entrenamiento y prueba, procedemos a desarrollar el modelo. Como se mencionó inicialmente, el modelo a utilizar es SARIMA, la razón para ocupar este por sobre ARIMA es que nuestra serie de tiempo presenta patrones estacionales, siendo SARIMA una extensión de ARIMA que toma en cuenta estos patrones. 
+
+Hay que tomar en cuenta que SARIMA es un caso especial de SARIMAX, la mayor cualidad de este último es que toma en consideración variables exógenas, siendo esta cualquiera característica externa que afecte a la serie de tiempo, para casos de este proyecto, solo tomamos en consideración la cantidad de prescripciones realizadas en un mes, no hay factores externos que influyan.
+
+Respecto al modelo elegido, SARIMA es un modelo que utiliza parámetros p, d, q, P, D, Q o bien SARIMA(p,d,q)(P,D,Q)m, para su modelación se seguirá la estructura de un SARIMAX (dado que es un caso especial), por lo que primero hay que empezar encontrar los valores de parámetros que optimicen el SARIMAX, conocemos ya 3 de ellos, siendo estos d, D y m, como 1, 1 y 12 respectivamente (estos valores de d y D son los que transforman nuestra serie de tiempo en estacionaria).
+
+Hondando un poco en el elegido, SARIMA es un modelo integrado estacional de dos otros dos modelos también utilizados para pronosticar series de tiempo:
+- AR (autoregressive model de parámetro p) el cual toma la una regresión linea de una variable con ella misma, considerando la dependencia lineal del valor actual con los valores pasados.
+- MA (moving average model de parámetro q) el cual toma la dependencia lineal entre los errores del valor actual y los errores de los valores pasados, estos errores suelen tener una distribución normal. 
+
+Con SARIMA(p,1,q)(P,1,Q)12 solo queda terminar de optimizar para encontrar valores para los parámetros faltantes que minimicen el AIC (Akaike's information criterion), este criterio nos ayuda a seleccionar el mejor modelo estadístico entre varios modelos presentados.
+
+![Primer AIC](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/AIC.PNG?raw=true)
+
+Obtenemos 625 combinaciones diferentes para encontrar los parámetros adecuados.
+
+De nuevo, ¿Para qué queriamos estos valores? estos son los valores de los parámetros para los cuales se minimiza el AIC, en el orden (p,q,P,Q), como observamos en el DataFrame, estos ya estan ordenados en orden ascendente con respecto a su AIC, por lo que los valores que minimizan mejor el AIC son (2, 3, 0, 1).
+
+Ahora tenemos todos los valores para los parámetros del mejor modelo SARIMA (según la minimización del AIC), con esto por fin podemos modelar completamente el modelo.
+
+SARIMA(p,d,q)(P,D,Q)m = SARIMA(2,1,3)(0,1,1)12
+
+El modelo entrenado con los parámetros anteriores nos entrega el siguiente diagnóstico:
+
+![Diagnóstico](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/diagnostic.png?raw=true)
+
+¿Que observamos en estos gráficos?
+
+- Superior izquierdo nos indica la tendencia, no hay, la varianza pareciera mantenerse constante, por lo podemos asumir que tenemos un modelo estacionario.
+- Superior derecho muestra la distribución que tiene el residuo siendo similar a una Normal.
+- Inferior izquierdo muestra la relación lineal que existe entre los valores de muestra y los teoricos dados por el modelo.
+- Inferior derecho indica la correlación existente entre las variables, tampoco hay, estos pequeños valores se asimilan a lo que llamamos anteriormente como ruido blanco.
+
+**Predicciones y pronóstico**
+
+>>>>>>> Stashed changes
 
