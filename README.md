@@ -9,11 +9,8 @@ Data ya procesada:
 
 ![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/DF.PNG?raw=true)
 
-<<<<<<< Updated upstream
-=======
 **Análisis exploratorio**
 
->>>>>>> Stashed changes
 Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis exploratorio sobre la data para ver sí existen patrones que puedan guiarnos, lo único que sabemos es que estamos trabajando con series de tiempo y queremos pronosticar (de esta forma se reduce en número de modelos a utilizar en la bolsa). Graficando los datos obtenemos una idea sobre que está ocurriendo:
 
 
@@ -28,9 +25,7 @@ Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paque
 - En la primera grafica observamos lo anterior, el numero de prescripciones entre los años 1991 y 2008.
 - La segunda, tendencia, nos muestra el comportamiento creciente del número de prescripciones recetadas al paso de los años.
 - La tercera, estacionalidad, muestra el patrón cíclico del número de prescripciones recetadas entre los años 1991 y 2008.
-<<<<<<< Updated upstream
 - La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data.
-=======
 - La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data, mientras mas cerca del 0 estén los valores, mas acertado es el pronóstico.
 
 Ahora queremos desarrollar el modelo que nos ayudará a pronosticar los próximos 6 meses, para ello, debemos empezar por ver que nuestra data presentada no tenga tendencia, sea estacionario y no tenga autocorrelación entre sus datos, aplicamos de esta forma el método ADF comprobarlo. ADF nos ayuda a comprobar si es que existe tendencia y estacionalidad en la serie de tiempo.
@@ -100,6 +95,4 @@ El modelo entrenado con los parámetros anteriores nos entrega el siguiente diag
 - Inferior derecho indica la correlación existente entre las variables, tampoco hay, estos pequeños valores se asimilan a lo que llamamos anteriormente como ruido blanco.
 
 **Predicciones y pronóstico**
-
->>>>>>> Stashed changes
 
