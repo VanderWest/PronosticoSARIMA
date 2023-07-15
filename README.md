@@ -27,7 +27,7 @@ Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paque
 - La tercera, estacionalidad, muestra el patrón cíclico del número de prescripciones recetadas entre los años 1991 y 2008.
 - La cuarta, residuos, denota las diferencias que hay entre los valores pronosticados, juntando la tendencia y la estacionalidad, contrastado con los valores reales presentados en la data, mientras mas cerca del 0 estén los valores, mas acertado es el pronóstico.
 
-Ahora queremos desarrollar el modelo que nos ayudará a pronosticar los próximos 6 meses, para ello, debemos empezar por ver que nuestra data presentada no tenga tendencia, sea estacionario y no tenga autocorrelación entre sus datos, aplicamos de esta forma el método ADF comprobarlo. ADF nos ayuda a comprobar si es que existe tendencia y estacionalidad en la serie de tiempo.
+Ahora queremos desarrollar el modelo que nos ayudará a pronosticar los próximos 6 meses, para ello, debemos empezar por ver que nuestra data presentada no tenga tendencia, sea estacionario y no tenga autocorrelación entre sus datos, aplicamos de esta forma el método ADF comprobarlo. La prueba ADF (Augmented Dickey-Fuller test) nos ayuda a comprobar si es que existe tendencia y estacionalidad en la serie de tiempo.
 
 Que sea estacionario es una de las características mas fundamentales dado que de esta forma el comportamiento de las series de tiempo puede ser predecible debido a que sus propiedades estadísticas (como la media o la varianza) se mantienen constantes en el tiempo, no solo eso, sino que el modelo que buscamos aplicar actúa sobre series de tiempo estacionarias.
 
@@ -35,7 +35,7 @@ ADF:
 - ADF Statistic: 3.145190
 - p-value: 1.000000
 
-Ambos valores nos indican que nuestra data no es estacionaria y que existe una tendencia en los datos, ADF utiliza hipótesis para comprobar ambos dos, si esque un p-value menor a 0.05 y el ADF es un número negativo alto, se puede rechazar lo que llamamos *hipótesis nula* y confirmar que se trata de una serie de tiempo estacional y sin tendencia.
+Ambos valores nos indican que nuestra data no es estacionaria y que existe una tendencia en los datos, ADF utiliza hipótesis para comprobar ambos dos, si esque un p-value menor a 0.05 y el ADF es un número negativo alto, se puede rechazar lo que llamamos *hipótesis nula* y confirmar que se trata de una serie de tiempo estacionaria y sin tendencia.
 
 Aquí aplicamos un método de transformación para que la serie de tiempo sea estacionaria, utilizando la diferenciación, para ello solo aplicamos la función diff de numpy, que ira tomando la diferencia en los pares de datos y creando una nueva serie de tiempo, esperando que esta última si sea estacionaria.
 
@@ -62,7 +62,7 @@ La parte en gris denota la muestra que será utilizada para le prueba, mientras 
 
 Una vez definidas las muestras de entrenamiento y prueba, procedemos a desarrollar el modelo. Como se mencionó inicialmente, el modelo a utilizar es SARIMA, la razón para ocupar este por sobre ARIMA es que nuestra serie de tiempo presenta patrones estacionales, siendo SARIMA una extensión de ARIMA que toma en cuenta estos patrones. 
 
-Hay que tomar en cuenta que SARIMA es un caso especial de SARIMAX, la mayor cualidad de este último es que toma en consideración variables exógenas, siendo esta cualquiera característica externa que afecte a la serie de tiempo, para casos de este proyecto, solo tomamos en consideración la cantidad de prescripciones realizadas en un mes, no hay factores externos que influyan.
+Hay que tomar en cuenta que SARIMA es un caso especial de SARIMAX, la mayor cualidad de este último es que toma en consideración variables exógenas, siendo esta cualquier característica externa que afecte a la serie de tiempo, para casos de este proyecto, solo tomamos en consideración la cantidad de prescripciones realizadas en un mes, no hay factores externos que influyan.
 
 Respecto al modelo elegido, SARIMA es un modelo que utiliza parámetros p, d, q, P, D, Q o bien SARIMA(p,d,q)(P,D,Q)m, para su modelación se seguirá la estructura de un SARIMAX (dado que es un caso especial), por lo que primero hay que empezar encontrar los valores de parámetros que optimicen el SARIMAX, conocemos ya 3 de ellos, siendo estos d, D y m, como 1, 1 y 12 respectivamente (estos valores de d y D son los que transforman nuestra serie de tiempo en estacionaria).
 
@@ -77,6 +77,7 @@ Llamamos a la función OptSarimax(train, None, order_list, d, D, s) para optimiz
 - *train* recibe el conjunto de variables endógenas que se utiliza en el entrenamiento del modelo.
 - *None* es el argumento que utilizamos para decirle a nuestra función que no usaremos variables exógenas para entrenar el modelo.
 - *order_list* recibe las múltiples combinaciones de valores para utilizar en los parámetros, esta función está usando 625 combinaciones diferentes para optimizar, así es como lo definimos:
+
 ![ejemploCombinaciones](https://github.com/VanderWest/PronosticoSARIMA/blob/Reports/Imagenes/Combinaciones.PNG?raw=true)
 - *D* y *d* corresponden a las cantidades de diferenciaciones estacionales y diferenciaciones simples que se utilizaron para que nuestra serie de tiempo sea estacionaria, siendo ambos valores 1 para este caso.
 - *s* corresponde a la duración en puntos del patrón estacional, en nuestro caso el patron tiene una duración de 12 meses.
@@ -101,7 +102,7 @@ El modelo entrenado con los parámetros anteriores nos entrega el siguiente diag
 
 - Superior izquierdo nos indica la tendencia, no hay, la varianza pareciera mantenerse constante, por lo podemos asumir que tenemos un modelo estacionario.
 - Superior derecho muestra la distribución que tiene el residuo siendo similar a una Normal.
-- Inferior izquierdo muestra la relación lineal que existe entre los valores de muestra y los teoricos dados por el modelo.
+- Inferior izquierdo muestra la relación lineal que existe entre los valores de muestra y los teoricos dados por el modelo, esto solo ocurre cuando los residuos tienen distribución similar a una Normal.
 - Inferior derecho indica la correlación existente entre las variables, tampoco hay, estos pequeños valores se asimilan a lo que llamamos anteriormente como ruido blanco.
 
 **Predicciones y pronóstico**
