@@ -67,8 +67,9 @@ Hay que tomar en cuenta que SARIMA es un caso especial de SARIMAX, la mayor cual
 Respecto al modelo elegido, SARIMA es un modelo que utiliza parámetros p, d, q, P, D, Q o bien SARIMA(p,d,q)(P,D,Q)m, para su modelación se seguirá la estructura de un SARIMAX (dado que es un caso especial), por lo que primero hay que empezar encontrar los valores de parámetros que optimicen el SARIMAX, conocemos ya 3 de ellos, siendo estos d, D y m, como 1, 1 y 12 respectivamente (estos valores de d y D son los que transforman nuestra serie de tiempo en estacionaria).
 
 Hondando un poco en el elegido, SARIMA es un modelo integrado estacional de dos otros dos modelos también utilizados para pronosticar series de tiempo:
-- AR (autoregressive model de parámetro p) el cual toma la una regresión linea de una variable con ella misma, considerando la dependencia lineal del valor actual con los valores pasados.
-- MA (moving average model de parámetro q) el cual toma la dependencia lineal entre los errores del valor actual y los errores de los valores pasados, estos errores suelen tener una distribución normal. 
+- AR(p) o *autoregressive model* el cual toma la una regresión linea de una variable con ella misma, considerando la dependencia lineal del valor actual con los valores pasados, donde el parámetro p corresponde a la cantidad de valores pasados que afectan al valor actual.
+- MA(q) o *moving average model* el cual toma la dependencia lineal entre los errores del valor actual y los errores de los valores pasados, estos errores suelen tener una distribución normal, donde el parámetro q corresponde a la cantidad de errores pasados que afectan al valor actual.
+- Los parámetros P y Q tienen la misma interpretación solo que toman la cantidad de patrones estacionales respecto a los valores y a los errores pasados (en periodo estacional) que afectan al valor actual.
 
 Con SARIMA(p,1,q)(P,1,Q)12 solo queda terminar de optimizar para encontrar valores para los parámetros faltantes que minimicen el AIC (Akaike's information criterion), este criterio nos ayuda a seleccionar el mejor modelo estadístico entre varios modelos presentados.
 
