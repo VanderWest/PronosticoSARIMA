@@ -72,6 +72,16 @@ Hondando un poco en el elegido, SARIMA es un modelo integrado estacional de dos 
 
 Con SARIMA(p,1,q)(P,1,Q)12 solo queda terminar de optimizar para encontrar valores para los parámetros faltantes que minimicen el AIC (Akaike's information criterion), este criterio nos ayuda a seleccionar el mejor modelo estadístico entre varios modelos presentados.
 
+Llamamos a la función OptSarimax(train, None, order_list, d, D, s) para optimizar (el código pueden encontrarlo en la Branch de desarrollo&prueba):
+- *train* recibe el conjunto de variables endógenas que se utiliza en el entrenamiento del modelo.
+- *None* es el argumento que utilizamos para decirle a nuestra función que no usaremos variables exógenas para entrenar el modelo.
+- *order_list* recibe las múltiples combinaciones de valores para utilizar en los parámetros, esta función está usando 625 combinaciones diferentes para optimizar, así es como lo definimos:
+![ejemploCombinaciones](https://github.com/VanderWest/PronosticoSARIMA/blob/Reports/Imagenes/Combinaciones.PNG?raw=true)
+- *D* y *d* corresponden a las cantidades de diferenciaciones estacionales y diferenciaciones simples que se utilizaron para que nuestra serie de tiempo sea estacionaria, siendo ambos valores 1 para este caso.
+- *s* corresponde a la duración en puntos del patrón estacional, en nuestro caso el patron tiene una duración de 12 meses.
+
+Utilizando lo mencionado anteriormente se consiguen las siguientes combinaciones de patrones en forma de (p,q,P,Q)
+
 ![Primer AIC](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/AIC.PNG?raw=true)
 
 Obtenemos 625 combinaciones diferentes para encontrar los parámetros adecuados.
@@ -97,12 +107,12 @@ El modelo entrenado con los parámetros anteriores nos entrega el siguiente diag
 
 Hay que tener un poco de cuidado, utilizaremos 4 años de data para testear y así pronosticar 6 meses, pero no queremos caer en que aun así sigue siendo muy pequeña la muestra, por lo que además del modelo SARIMA, se utilizará también un modelo estacional como referencia, que utilizará los 12 últimos meses de la data como muestra para pronosticar los siguientes 6 meses.
 
-Este proceso de comparación se lleva a cabo mediante el método Rolling Forecast, tomando como parámetros:
-- El Dataframe trabajado.
-- Tamaño de la muestra de entrenamiento.
-- Horizonte, que corresponde al tamaño de la muestra de prueba.
-- Ventana, que corresponde a cuantos puntos queremos pronosticar.
-- Método, cuál es el modelo que se utilizará en el pronóstico.
+Llamamos a la función Rolling_Forecast(df, Strain, horizon, window, method) para realizar las predicciones (el código pueden encontrarlo en la Branch de desarrollo&prueba), esta recibe los siguientes parámetros:
+- *df* : El Dataframe trabajado.
+- *Strain* : Tamaño de la muestra de entrenamiento.
+- *horizon* o Horizonte, que corresponde al tamaño de la muestra de prueba.
+- *window* o Ventana, que corresponde a cuantos puntos queremos pronosticar.
+- *method* : cuál es el modelo que se utilizará en el pronóstico.
 
 De esta forma podemos crear una comparación entre las predicciones de varios modelos simultáneamente. Asignamos al método los siguientes valores y continuamos con la predicción:
 
@@ -110,11 +120,13 @@ De esta forma podemos crear una comparación entre las predicciones de varios mo
 - Horizon = 48    Tamaño del conjunto de prueba.
 - Window = 12     Pasos a predecir.
 
-Como se mencionó antes, la razón para trabajar con una ventana de 12 es porque estamos aplicando get_predict en nuestro modelo en lugar de get_forecast, mas adelante utilizaremos la segunda función pero primero queremos evaluar el desempeño del modelo .
+Como se mencionó antes, la razón para trabajar con una ventana de 12 es porque estamos aplicando get_predict en nuestro modelo en lugar de get_forecast, mas adelante utilizaremos la segunda función pero primero queremos evaluar el desempeño del modelo.
 
-Graficando nuestro Rolling Forecast:
+Finalmente utilizamos el en *method* a ‘SARIMA’ y luego ‘Seasonal’ para guardar sus predicciones y así mostrar su comportamiento en el siguiente gráfico para el Rolling Forecast:
 
 ![Rolling1](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/GrafoProno1.png?raw=true)
+
+ *considerar que este modelo lleva un SARIMA entrenado con los parámetros (2,1,3)(0,1,1)12, si se desea cambiar los parámetros habrá que hacerlo desde el archivo de Python*
 
 Podemos observar que poco a poco SARIMA se aleja de los valores reales, y esto quizas es debido a que ocupamos pocos datos para el entrenamiento, asique volveremos a entrenar un nuevo SARIMA, pero en lugar de dejar 4 años para prueba, dejaremos solo 3 y el resto lo dejaremos para entrenamiento, para esto debemos realizar los mismo pasos que hemos seguido hasta hora desde cero:
 
