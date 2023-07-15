@@ -9,6 +9,10 @@ Data ya procesada:
 
 ![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/DF.PNG?raw=true)
 
+- Se puede observar que la data procesada de distribuye con el primer día de cada mes, empezando el 1 de julio de 1991 hasta el 1 de junio de 2008, en total tenemos 17 años de datos.
+- Una casilla en la columna de prescripciones corresponde a la cantidad de recetas anti-diabetes prescrita a lo largo de un mes.
+
+
 **Análisis exploratorio**
 
 Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis exploratorio sobre la data para ver sí existen patrones que puedan guiarnos, lo único que sabemos es que estamos trabajando con series de tiempo y queremos pronosticar (de esta forma se reduce en número de modelos a utilizar en la bolsa). Graficando los datos obtenemos una idea sobre que está ocurriendo:
