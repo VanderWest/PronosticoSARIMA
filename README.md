@@ -77,7 +77,7 @@ Hondando un poco en el elegido, SARIMA es un modelo integrado estacional de dos 
 
 Con SARIMA(p,1,q)(P,1,Q)12 solo queda terminar de optimizar para encontrar valores para los parámetros faltantes que minimicen el AIC (Akaike's information criterion), este criterio nos ayuda a seleccionar el mejor modelo estadístico entre varios modelos presentados.
 
-Llamamos a la función OptSarimax(train, None, order_list, d, D, s) para optimizar (el código pueden encontrarlo en la Branch de desarrollo&prueba):
+Llamamos a la función OptSarimax(train, None, order_list, d, D, s) para optimizar (el código pueden encontrarlo en la carpeta src):
 - *train* recibe el conjunto de variables endógenas que se utiliza en el entrenamiento del modelo.
 - *None* es el argumento que utilizamos para decirle a nuestra función que no usaremos variables exógenas para entrenar el modelo.
 - *order_list* recibe las múltiples combinaciones de valores para utilizar en los parámetros, esta función está usando 625 combinaciones diferentes para optimizar, así es como lo definimos:
@@ -113,7 +113,7 @@ El modelo entrenado con los parámetros anteriores nos entrega el siguiente diag
 
 Hay que tener un poco de cuidado, utilizaremos 4 años de data para testear y así pronosticar 6 meses, pero no queremos caer en que aun así sigue siendo muy pequeña la muestra, por lo que además del modelo SARIMA, se utilizará también un modelo estacional como referencia, que utilizará los 12 últimos meses de la data como muestra para pronosticar los siguientes 6 meses.
 
-Llamamos a la función Rolling_Forecast(df, Strain, horizon, window, method) para realizar las predicciones (el código pueden encontrarlo en la Branch de desarrollo&prueba), esta recibe los siguientes parámetros:
+Llamamos a la función Rolling_Forecast(df, Strain, horizon, window, method) para realizar las predicciones (el código pueden encontrarlo en la carpeta src), esta recibe los siguientes parámetros:
 - *df* : El Dataframe trabajado.
 - *Strain* : Tamaño de la muestra de entrenamiento.
 - *horizon* o Horizonte, que corresponde al tamaño de la muestra de prueba.
