@@ -7,7 +7,7 @@ Los datos para este desafío fueron obtenidos de https://www.key2stats.com/data-
 
 Data ya procesada:
 
-![Data limpia](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/DF.PNG?raw=true)
+![Data limpia](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/DF.PNG?raw=true)
 
 - Se puede observar que la data procesada de distribuye con el primer día de cada mes, empezando el 1 de julio de 1991 hasta el 1 de junio de 2008, en total tenemos 17 años de datos.
 - Una casilla en la columna de prescripciones corresponde a la cantidad de recetas anti-diabetes prescrita a lo largo de un mes.
@@ -18,13 +18,13 @@ Data ya procesada:
 Partamos por asumir que no sabemos que modelo utilizar, realizamos un análisis exploratorio sobre la data para ver sí existen patrones que puedan guiarnos, lo único que sabemos es que estamos trabajando con series de tiempo y queremos pronosticar (de esta forma se reduce en número de modelos a utilizar en la bolsa). Graficando los datos obtenemos una idea sobre que está ocurriendo:
 
 
-![Gráfica](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Gr%C3%A1fica%20prescripciones%20por%20mes.png?raw=true)
+![Gráfica](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/Gr%C3%A1fica%20prescripciones%20por%20mes.png?raw=true)
 
 Con esta sola gráfica se pueden observar 3 patrones: Primero la tendencia creciente que tienen los datos conforme pasa los años. Segundo, la estacionalidad de los datos, creando patrones repetitivos en los años. Tercero, una suerte de ruido blanco, mostrando lo errático que se van volviendo los valores de los datos sin perderse en la aleatoriedad.
 
 Dado lo anterior podemos realizar un desglose de la gráfica utilizando el paquete STL (seasonal-trend decomposition) para ver en detalle que es lo que ocurre:
 
-![STL](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/STL.png?raw=true)
+![STL](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/STL.png?raw=true)
 
 - En la primera grafica observamos lo anterior, el numero de prescripciones entre los años 1991 y 2008.
 - La segunda, tendencia, nos muestra el comportamiento creciente del número de prescripciones recetadas al paso de los años.
@@ -60,7 +60,7 @@ Para el entrenamiento del modelo no podemos ocupar el clásico train_test_split,
 
 Tenemos data de 204 meses, por lo que utilizaremos 156 meses para el entrenamiento y los ultimos 4 años para realizar las pruebas:
 
-![traintest](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Gris.png?raw=true)
+![traintest](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/Gris.png?raw=true)
 
 La parte en gris denota la muestra que será utilizada para le prueba, mientras que el resto de la data será para entrenar el modelo.
 
@@ -82,13 +82,13 @@ Llamamos a la función OptSarimax(train, None, order_list, d, D, s) para optimiz
 - *None* es el argumento que utilizamos para decirle a nuestra función que no usaremos variables exógenas para entrenar el modelo.
 - *order_list* recibe las múltiples combinaciones de valores para utilizar en los parámetros, esta función está usando 625 combinaciones diferentes para optimizar, así es como lo definimos:
 
-![ejemploCombinaciones](https://github.com/VanderWest/PronosticoSARIMA/blob/Reports/Imagenes/Combinaciones.PNG?raw=true)
+![ejemploCombinaciones](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/Combinaciones.PNG?raw=true)
 - *D* y *d* corresponden a las cantidades de diferenciaciones estacionales y diferenciaciones simples que se utilizaron para que nuestra serie de tiempo sea estacionaria, siendo ambos valores 1 para este caso.
 - *s* corresponde a la duración en puntos del patrón estacional, en nuestro caso el patron tiene una duración de 12 meses.
 
 Utilizando lo mencionado anteriormente se consiguen las siguientes combinaciones de patrones en forma de (p,q,P,Q)
 
-![Primer AIC](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/AIC.PNG?raw=true)
+![Primer AIC](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/AIC.PNG?raw=true)
 
 Obtenemos 625 combinaciones diferentes para encontrar los parámetros adecuados.
 
@@ -100,7 +100,7 @@ SARIMA(p,d,q)(P,D,Q)m = SARIMA(2,1,3)(0,1,1)12
 
 El modelo entrenado con los parámetros anteriores nos entrega el siguiente diagnóstico:
 
-![Diagnóstico](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/diagnostic.png?raw=true)
+![Diagnóstico](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/diagnostic.png?raw=true)
 
 ¿Que observamos en estos gráficos?
 
@@ -130,7 +130,7 @@ Como se mencionó antes, la razón para trabajar con una ventana de 12 es porque
 
 Finalmente utilizamos el en *method* a ‘SARIMA’ y luego ‘Seasonal’ para guardar sus predicciones y así mostrar su comportamiento en el siguiente gráfico para el Rolling Forecast:
 
-![Rolling1](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/GrafoProno1.png?raw=true)
+![Rolling1](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/GrafoProno1.png?raw=true)
 
  *considerar que este modelo lleva un SARIMA entrenado con los parámetros (2,1,3)(0,1,1)12, si se desea cambiar los parámetros habrá que hacerlo desde el archivo de Python*
 
@@ -142,13 +142,13 @@ Podemos observar que poco a poco SARIMA se aleja de los valores reales, y esto q
 
 Optimizando con 168 meses obtenemos las siguientes combinaciones para AIC:
 
-![AIC2](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/AIC2.PNG?raw=true)
+![AIC2](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/AIC2.PNG?raw=true)
 
 Con esto entendemos que los parámetros (p,q,P,Q) toman los valores (3,1,1,3) para así minimizar el criterio.
 
 Entrenamos nuestro SARIMA con estos valores y el Rolling Forecast toma la siguente forma:
 
-![Rolling2](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/GrafoProno2.png?raw=true)
+![Rolling2](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/GrafoProno2.png?raw=true)
 
 Notamos que ahora las predicciones de SARIMA se acercan más a los valores reales, por lo que ahora procedemos a evaluar el desempeño de los modelos, así podemos tener una idea de la calidad de estos a través de sus métricas.
 
@@ -156,7 +156,7 @@ Notamos que ahora las predicciones de SARIMA se acercan más a los valores reale
 
 Aquí evaluaremos la calidad de los modelos a través de la métrica MAPE (Mean Absolute Percentage Error) el cual es el indicador de desempeño para modelos de pronostico en series de tiempo. Este evalua los modelos midiendo el error porcentual promedio entre los valores pronosticados y los valores reales:
 
-![MAPE](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/MAPE.PNG?raw=true)
+![MAPE](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/MAPE.PNG?raw=true)
 
 - n corresponde al número de pares de valores predicción-real.
 - A es el valor real. 
@@ -178,7 +178,7 @@ Antes estábamos prediciendo en el modelo para las muestras utilizando la funci�
 
 Get_forecast recibe la cantidad de pasos que queremos pronosticar a partir de nuestro modelo y nos entrega estos valores, así, colocando una ventana igual a 6 obtenemos el pronostico de los meses que desconocemos.
 
-![Cantidades](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Cantidades%20pronosticadas.PNG?raw=true)
+![Cantidades](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/Cantidades%20pronosticadas.PNG?raw=true)
 
 **Conclusiones**
 
@@ -191,4 +191,4 @@ Get_forecast recibe la cantidad de pasos que queremos pronosticar a partir de nu
 
 Con esto finalmente obtenemos el pronostico de la cantidad aproximada de medicinas anti-diabeticas que podrian ser prescritas en Australia a partir de agosto hasta fines del 2008.
 
-![Cantidades pronosticadas](https://github.com/VanderWest/Proyecto/blob/Reports/Imagenes/Meses%20pronosticados.PNG?raw=true) 
+![Cantidades pronosticadas](https://github.com/VanderWest/PronosticoSARIMA/blob/main/reports/Imagenes/Meses%20pronosticados.PNG?raw=true) 
